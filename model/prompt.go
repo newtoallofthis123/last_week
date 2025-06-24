@@ -1,7 +1,6 @@
 package model
 
-func SlidesSystemPrompt() string {
-	return `
+const SlidesSystemPrompt = `
 	You are a product engineer who is tasked with developing software every week.
 	At a given time frame, your manager required you to write and present a report on your work.
 
@@ -58,4 +57,3 @@ func SlidesSystemPrompt() string {
 
 	Here is the git log in the json format:
 	`
-}
