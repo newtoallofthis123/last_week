@@ -19,6 +19,7 @@ var (
 	localStore = flag.Bool("local", false, "Use local store")
 	submodules = flag.Bool("submodules", false, "Include submodules")
 	pipe       = flag.Bool("pipe", false, "Pipe the output to a file")
+	modelType  = flag.String("model", "gemini", "Use `gemini` or an `ollama` model")
 )
 
 func main() {
@@ -28,8 +29,14 @@ func main() {
 	if !*pipe {
 		s.Start()
 	}
-	env := utils.ReadEnv(*localStore)
-	m, err := model.NewGeminiModel(context.Background(), &env)
+
+	m, err := model.Model(nil), error(nil)
+	if *modelType == "local" {
+		m, err = model.NewOllamaModel(context.Background())
+	} else {
+		env := utils.ReadEnv(*localStore)
+		m, err = model.NewGeminiModel(context.Background(), &env)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -44,7 +51,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	response, err := m.GenerateResponse(string(json), model.SlidesSystemPrompt())
+	response, err := m.GenerateResponse(string(json), model.SlidesSystemPrompt)
 	if err != nil {
 		log.Fatal(err)
 	}
